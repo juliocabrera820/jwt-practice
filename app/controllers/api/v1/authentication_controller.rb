@@ -3,8 +3,10 @@
 module Api
   module V1
     class AuthenticationController < ApplicationController
+      skip_before_action :authorized, only: [:sign_up, :sign_in]
+      before_action :set_user, only: [:sign_in]
+
       rescue_from ActiveRecord::RecordNotUnique, with: :not_unique
-      rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
       def sign_up
         @user = User.new(user_params)
@@ -13,6 +15,13 @@ module Api
         else
           render json: @user.errors, status: :unprocessable_entity
         end
+      end
+
+      def sign_in
+        user_error unless @user.email == params[:email] && @user.authenticate(params[:password])
+
+        token = encode(@user)
+        render json: token, status: :ok
       end
 
       private
@@ -29,8 +38,8 @@ module Api
         render json: { message: 'email must be unique' }, status: :unprocessable_entity
       end
 
-      def not_found
-        render json: { message: 'email not found' }, status: :unprocessable_entity
+      def user_error
+        render json: { message: 'password is not right' }, status: :bad_request
       end
     end
   end
