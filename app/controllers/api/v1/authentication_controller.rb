@@ -18,7 +18,7 @@ module Api
       end
 
       def sign_in
-        user_error unless @user.email == params[:email] && @user.authenticate(params[:password])
+        return user_error unless @user.email == params[:email] && @user.authenticate(params[:password])
 
         token = encode(@user)
         render json: token, status: :ok
@@ -39,7 +39,7 @@ module Api
       end
 
       def user_error
-        render json: { message: 'password is not right' }, status: :bad_request
+        render json: { message: 'password is wrong' }, status: :bad_request
       end
     end
   end
