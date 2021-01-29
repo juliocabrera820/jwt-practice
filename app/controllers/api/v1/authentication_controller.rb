@@ -3,7 +3,6 @@
 module Api
   module V1
     class AuthenticationController < ApplicationController
-      skip_before_action :authorized, only: [:sign_up, :sign_in]
       before_action :set_user, only: [:sign_in]
 
       rescue_from ActiveRecord::RecordNotUnique, with: :not_unique
@@ -20,7 +19,7 @@ module Api
       def sign_in
         return user_error unless @user.email == params[:email] && @user.authenticate(params[:password])
 
-        token = encode(@user)
+        token = AuthenticationService.encode(@user)
         render json: token, status: :ok
       end
 
