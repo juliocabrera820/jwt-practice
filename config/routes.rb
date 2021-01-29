@@ -5,6 +5,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       post '/authentication/sign_up', to: 'authentication#sign_up'
       post '/authentication/sign_in', to: 'authentication#sign_in'
+      resources :users do
+        resources :repositories
+      end
     end
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
