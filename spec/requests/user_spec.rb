@@ -17,7 +17,7 @@ RSpec.describe 'User', type: :request do
       expect(JSON.parse(response.body)).to eq(
         {
           'id' => 1,
-          'name' => 'l@gmail.com'
+          'email' => 'l@gmail.com'
         }
       )
     end
