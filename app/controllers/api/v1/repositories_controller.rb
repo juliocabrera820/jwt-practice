@@ -37,7 +37,7 @@ module Api
       end
 
       def repository_params
-        params.permit(:name, :description, :visibility)
+        params.permit(:name, :description, :visible)
       end
     end
   end

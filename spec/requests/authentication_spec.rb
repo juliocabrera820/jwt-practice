@@ -24,12 +24,10 @@ RSpec.describe 'Authentication', type: :request do
     end
   end
   describe 'POST /authentication/sign_in' do
-    let(:user) { FactoryBot.create(:user) }
+    let(:user) { FactoryBot.create(:user, email: 'fa@gmail.com', password: '12') }
     it 'generates a new token with valid data' do
-      expiration_time = Time.now.to_i + 1 * 3600
-      payload = { user_id: user.id, exp: expiration_time }
-      token = JWT.encode(payload, ApplicationController::SECRET)
-      post '/api/v1/authentication/sign_in', params: { email: 'l@gmail.com', password: '123' }
+      token = AuthenticationService.encode(user)
+      post '/api/v1/authentication/sign_in', params: { email: 'fa@gmail.com', password: '12' }
       expect(response).to have_http_status(:success)
       expect(response.body).to eq(token)
     end
