@@ -4,7 +4,8 @@ class RepositoriesRepository
   end
 
   def show(user_id, id)
-    Repository.where(user_id: user_id, id: id)
+    repository = Repository.where(user_id: user_id, id: id)
+    repository[0]
   end
 
   def create(user_id, repository_params)
