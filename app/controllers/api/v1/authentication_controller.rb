@@ -8,16 +8,16 @@ module Api
       rescue_from ActiveRecord::RecordNotUnique, with: :not_unique
 
       def sign_up
-        @user = User.new(user_params)
-        if @user.save!
-          render json: @user, status: :ok
+        if UsersRepository.new.create(user_params)
+          render json: { message: 'user successfully created'}, status: :ok
         else
           render json: @user.errors, status: :unprocessable_entity
         end
       end
 
       def sign_in
-        return user_error unless @user.email == params[:email] && @user.authenticate(params[:password])
+        return email_error unless @user
+        return user_error unless @user.authenticate(params[:password])
 
         token = AuthenticationService.encode(@user)
         render json: token, status: :ok
@@ -30,7 +30,7 @@ module Api
       end
 
       def set_user
-        @user = User.find_by(email: params[:email])
+        @user = UsersRepository.new.find_by_email(params[:email])
       end
 
       def not_unique
@@ -39,6 +39,10 @@ module Api
 
       def user_error
         render json: { message: 'password is wrong' }, status: :bad_request
+      end
+
+      def email_error
+        render json: { message: 'email does not exist' }, status: :bad_request
       end
     end
   end
