@@ -5,30 +5,29 @@ module Api
     class RepositoriesController < ApplicationController
       include Authenticable
       before_action :authorize
-      before_action :set_user
 
       def index
-        render json: @user.repositories, status: :ok
+        render json: RepositoriesRepository.new.all(params[:user_id]), status: :ok
       end
 
       def create
-        @repository = Repository.new(repository_params)
-        @repository.user_id = @user.id
-        if @repository.save
-          render json: @repository, status: :created
+        if RepositoriesRepository.new.create(params[:user_id], repository_params)
+          render json: { message: 'repository successfully created' }, status: :created
         else
           render json: @repository.error, status: :unprocessable_entity
         end
       end
 
-      private
-
-      def set_user
-        @user = User.find(params[:user_id])
+      def show
+        repository = RepositoriesRepository.new.show(params[:user_id], params[:id])
+        render json: repository, status: :ok
       end
+
+      private
 
       def authorize
         token = AuthenticationService.decode_token(request)
+        return forbidden unless token
         return forbidden unless token['user_id'].to_s == params[:user_id]
       end
 
