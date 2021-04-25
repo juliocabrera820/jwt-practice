@@ -7,7 +7,8 @@ module Api
       before_action :authorize
 
       def index
-        render json: RepositoriesRepository.new.all(params[:user_id]), status: :ok
+        repositories = RepositoriesRepository.new.all(params[:user_id])
+        render json: RepositoriesPresenter.new(repositories).as_json, status: :ok
       end
 
       def create
@@ -20,7 +21,7 @@ module Api
 
       def show
         repository = RepositoriesRepository.new.show(params[:user_id], params[:id])
-        render json: repository, status: :ok
+        render json: RepositoryPresenter.new(repository).as_json, status: :ok
       end
 
       private

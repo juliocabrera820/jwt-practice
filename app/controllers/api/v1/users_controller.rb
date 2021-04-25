@@ -8,7 +8,7 @@ module Api
       before_action :set_user, only: [:show]
 
       def show
-        render json: @user, status: :ok
+        render json: UserPresenter.new(@user).as_json, status: :ok
       end
 
       private
