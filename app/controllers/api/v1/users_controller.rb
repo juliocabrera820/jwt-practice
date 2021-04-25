@@ -15,11 +15,12 @@ module Api
 
       def authorize
         token = AuthenticationService.decode_token(request)
+        return forbidden unless token
         return forbidden unless token['user_id'].to_s == params[:id]
       end
 
       def set_user
-        @user = User.find(params[:id])
+        @user = UsersRepository.new.show(params[:id])
       end
 
       def forbidden
