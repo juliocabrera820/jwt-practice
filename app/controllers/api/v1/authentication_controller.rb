@@ -6,10 +6,13 @@ module Api
       before_action :set_user, only: [:sign_in]
 
       rescue_from ActiveRecord::RecordNotUnique, with: :not_unique
+      rescue_from JWT::ExpiredSignature, with: :signature_error
+      rescue_from JWT::DecodeError, with: :decode_error
+      rescue_from JWT::VerificationError, with: :verification_error
 
       def sign_up
         if UsersRepository.new.create(user_params)
-          render json: { message: 'user successfully created'}, status: :ok
+          render json: { message: 'user successfully created' }, status: :ok
         else
           render json: @user.errors, status: :unprocessable_entity
         end
@@ -43,6 +46,18 @@ module Api
 
       def email_error
         render json: { message: 'email does not exist' }, status: :bad_request
+      end
+
+      def signature_error
+        render json: { message: 'error with the signature' }, status: :bad_request
+      end
+
+      def decode_error
+        render json: { message: 'decode error' }, status: :bad_request
+      end
+
+      def verification_error
+        render json: { message: 'token is invalid' }, status: :bad_request
       end
     end
   end

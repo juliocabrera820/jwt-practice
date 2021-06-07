@@ -6,13 +6,7 @@ class AuthenticationService
   def self.decode_token(request)
     token = request.headers['Authorization'].split(' ')[1]
 
-    begin
-      JWT.decode(token, SECRET)[0]
-    rescue JWT::DecodeError
-      nil
-    rescue JWT::ExpiredSignature
-      nil
-    end
+    JWT.decode(token, SECRET)[0]
   end
 
   def self.encode(user_data)
