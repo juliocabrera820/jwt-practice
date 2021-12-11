@@ -17,14 +17,7 @@ RSpec.describe 'Repository', type: :request do
       post "/api/v1/users/#{user.id}/repositories", params: { name: 'demo', description: 'demo jwt', visible: true },
                                                     headers: { Authorization: "Bearer #{token}" }
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)).to eq(
-        {
-          'id' => 1,
-          'name' => 'demo',
-          'description' => 'demo jwt',
-          'visible' => true
-        }
-      )
+      expect(JSON.parse(response.body)).to eq({ 'message' => 'repository successfully created' })
     end
   end
 end
