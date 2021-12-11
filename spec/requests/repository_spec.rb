@@ -10,7 +10,7 @@ RSpec.describe 'Repository', type: :request do
     end
   end
   let(:user) { FactoryBot.create(:user) }
-  describe 'POST /users/:user_id/repositories' do
+  xdescribe 'POST /users/:user_id/repositories' do
     it 'returns a new repository' do
       token = AuthenticationService.encode(user)
       post "/api/v1/users/#{user.id}/repositories", params: { name: 'demo', description: 'demo jwt', visible: true },
