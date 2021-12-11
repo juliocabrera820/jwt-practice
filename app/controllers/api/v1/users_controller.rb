@@ -4,7 +4,6 @@ module Api
   module V1
     class UsersController < ApplicationController
       include Authenticable
-      before_action :authorize
       before_action :set_user, only: [:show]
 
       def show
@@ -12,12 +11,6 @@ module Api
       end
 
       private
-
-      def authorize
-        token = AuthenticationService.decode_token(request)
-        return forbidden unless token
-        return forbidden unless token['user_id'].to_s == params[:id]
-      end
 
       def set_user
         @user = UsersRepository.new.show(params[:id])
