@@ -7,12 +7,11 @@ RSpec.describe 'Authentication', type: :request do
     it 'returns a new user with valid data' do
       post '/api/v1/authentication/sign_up', params: { email: 'pekka@gmail.com', password: '12345' }
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)).to eq(
-        {
-          'id' => 2,
-          'email' => 'pekka@gmail.com'
-        }
-      )
+      expect(response.body).to include('id')
+      expect(response.body).to include('email')
+      expect(response.body).to include('password_digest')
+      expect(response.body).to include('created_at')
+      expect(response.body).to include('updated_at')
     end
     it 'returns an unprocessable entity status with empty password' do
       post '/api/v1/authentication/sign_up', params: { email: 'pekka@gmail.com', password: '' }
@@ -32,7 +31,7 @@ RSpec.describe 'Authentication', type: :request do
       expect(response.body).to eq(token)
     end
     FactoryBot.create(:user, email: 'll@gmail.com', password: '12')
-    it 'does not generate a token with wrong password' do
+    it 'does not generate a token due to wrong password' do
       post '/api/v1/authentication/sign_in', params: { email: 'll@gmail.com', password: '122' }
       expect(response).to have_http_status(:bad_request)
     end
